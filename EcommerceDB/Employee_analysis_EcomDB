@@ -1,0 +1,129 @@
+
+-- 1. Total revenue generated
+
+select sum(amount), status from ecommerce_db.payments where status = 'Success';
+
+-- 2. Highest and lowest product price
+
+select * from ecommerce_db.products;
+
+select max(unit_price) from ecommerce_db.products;
+select min(unit_price) from ecommerce_db.products;
+
+-- 3. total inventory unit available
+
+select * from ecommerce_db.products;
+
+select sum(stock_quantity) from ecommerce_db.products;
+
+-- 4. Total Quantity sold
+
+select * from ecommerce_db.order_items;
+
+select sum(quantity) from ecommerce_db.order_items;
+
+-- 5 Average order value
+
+select * from ecommerce_db.order_items;
+
+select sum(quantity*unit_price)/ count(order_id) as Average_order_value
+from ecommerce_db.order_items;
+
+-- 6. Total revenue product wise
+
+Select p.product_name, sum(oi.quantity*oi.unit_price) as total_revenue
+from ecommerce_db.products as p 
+join ecommerce_db.order_items as oi
+on oi.product_id = p.product_id
+group by p.product_name 
+order by sum(oi.quantity*oi.unit_price) desc;
+
+-- 7. Revenue by category
+
+select p.category , sum(oi.quantity*oi.unit_price) as total_revenue
+from ecommerce_db.products as p
+join ecommerce_db.order_items as oi
+on oi.product_id = p.product_id
+group by p.category
+order by sum(oi.quantity*oi.unit_price) desc;
+
+-- 8. Revenue by brand
+
+select p.brand, sum(oi.quantity*oi.unit_price) as total_revenue
+from ecommerce_db.products as p
+join ecommerce_db.order_items as oi
+on oi.product_id = p.product_id
+group by p.brand
+order by total_revenue desc;
+
+-- 9. orders by status
+
+select * from ecommerce_db.orders;
+
+select status, count(order_id) from ecommerce_db.orders group by status;
+
+
+-- 10. Payments by methods
+
+select method, count(payment_id) from ecommerce_db.payments group by method;
+
+
+
+-- 11. customer distribution by city
+
+select city, count(customer_id) from ecommerce_db.customers group by city;
+
+-- 12. inventory value by product
+
+select product_name,sum(unit_price*stock_quantity) from ecommerce_db.products group by product_name;
+
+-- 13. product costing more than 20000
+
+select product_name, unit_price from ecommerce_db.products where unit_price > 20000;
+
+ -- 14.  customers from mumbai
+ select * from ecommerce_db.customers;
+ select count(customer_id), city from ecommerce_db.customers where city = 'Mumbai';
+ 
+
+ 
+-- 15. customers whose name starts with A
+
+select full_name from ecommerce_db.customers where full_name like 'A%';
+
+-- 16. monthly revenue trend
+
+select month(payment_date), sum(amount) from ecommerce_db.payments group by month(payment_date);
+
+
+-- 17. orders per day
+
+select day(order_date), count(order_id) from ecommerce_db.orders group by day(order_date);
+
+-- 18. order by day name
+select dayname(order_date), count(order_id) from ecommerce_db.orders group by dayname(order_date);
+
+-- 19. low selling product
+select p.product_name, sum(oi.quantity) as Total_quantity
+from products p
+join order_items oi
+on oi.product_id = p.product_id
+group by p.product_name
+order by Total_quantity desc
+limit 5;
+
+-- 20. Find top five revenue generating product
+
+select p.product_name,sum(oi.quantity*oi.unit_price) as revenue
+ from order_items oi
+ join products p
+ on oi.product_id = p.product_id
+ group by product_name
+ order by revenue desc
+ limit 5;
+
+-- ------------------------------------------------------------------------------------------
+
+
+
+
